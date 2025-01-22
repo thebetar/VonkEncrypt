@@ -23,9 +23,9 @@ public:
         {
             if (i < text.size())
             {
-                // Convert to ASCII (a number between 32 and 126)
+                // Get char
                 char c = text[i];
-                // Shift down to 0
+                // Shift to 0-94 range
                 c -= 32;
                 // Add to vector
                 ascii_values.push_back(c);
@@ -38,29 +38,25 @@ public:
 
         int randomiser = key;
 
+        // XOR encryption
         for (int i = 0; i < MAX_TEXT_SIZE; i++)
         {
             for (int j = 0; j < SALT_ROUNDS; j++)
             {
-                // XOR with semi-random value
-                int semi_random = semi_random_pi(i + key + randomiser);
-                ascii_values[i] = ascii_values[i] + semi_random;
-                // Keep value within printable ASCII range for whitespace
-                ascii_values[i] = ascii_values[i] % 94;
-                // Update randomiser
-                randomiser = (randomiser + semi_random) % 94;
+                int semi_random = semi_random_pi(i + key + randomiser) % 94;
+                ascii_values[i] = ascii_values[i] ^ semi_random;
+                randomiser = (randomiser ^ semi_random) % 94;
             }
         }
 
         string encrypted_text = "";
-
         for (int i = 0; i < MAX_TEXT_SIZE; i++)
         {
-            // Convert back to char
+            // Get char
             char c = ascii_values[i];
-            // Shift back to ASCII range
+            // Shift back to printable ASCII
             c += 32;
-            // Add to encrypted text
+            // Add to string
             encrypted_text.push_back(c);
         }
 
@@ -71,14 +67,14 @@ public:
     {
         vector<int> ascii_values;
 
-        // Convert and pad input
+        // Convert input
         for (int i = 0; i < MAX_TEXT_SIZE; i++)
         {
             if (i < encrypted_text.size())
             {
-                // Convert to ASCII (a number between 32 and 126)
+                // Get char
                 char c = encrypted_text[i];
-                // Shift down to 0
+                // Shift to 0-94 range
                 c -= 32;
                 // Add to vector
                 ascii_values.push_back(c);
@@ -91,28 +87,25 @@ public:
 
         int randomiser = key;
 
+        // XOR decryption (same operation as encryption)
         for (int i = 0; i < MAX_TEXT_SIZE; i++)
         {
             for (int j = 0; j < SALT_ROUNDS; j++)
             {
-                // XOR with semi-random value
-                int semi_random = semi_random_pi(i + key + randomiser);
-                // Fix: Handle negative numbers correctly with modulo
-                ascii_values[i] = ((ascii_values[i] - semi_random) + 94) % 94;
-                // Update randomiser
-                randomiser = (randomiser + semi_random) % 94;
+                int semi_random = semi_random_pi(i + key + randomiser) % 94;
+                ascii_values[i] = ascii_values[i] ^ semi_random;
+                randomiser = (randomiser ^ semi_random) % 94;
             }
         }
 
         string decrypted_text = "";
-
         for (int i = 0; i < MAX_TEXT_SIZE; i++)
         {
-            // Convert back to char
+            // Get char
             char c = ascii_values[i];
-            // Shift back to ASCII range
+            // Shift back to printable ASCII
             c += 32;
-            // Add to encrypted text
+            // Add to string
             decrypted_text.push_back(c);
         }
 
@@ -153,7 +146,7 @@ int main()
 
     symmetric_encryption.set_random_values(random_values);
 
-    // RSA key generation
+    // Encryption key
     int encryption_key = 0x060899;
 
     // Get input
