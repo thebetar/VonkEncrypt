@@ -7,8 +7,8 @@
 
 using namespace std;
 
-#define MAX_TEXT_SIZE 32
-#define SALT_ROUNDS 4
+#define MAX_TEXT_SIZE 64
+#define SALT_ROUNDS 8
 #define RANDOM_STRING_LENGTH 10000
 
 class SymmetricEncryption
