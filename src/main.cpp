@@ -146,9 +146,6 @@ int main()
 
     symmetric_encryption.set_random_values(random_values);
 
-    // Encryption key
-    int encryption_key = 0x060899;
-
     // Get input
     string text;
 
@@ -160,6 +157,20 @@ int main()
     {
         printf("Text is too long\n");
         return 1;
+    }
+
+    // Get encryption key
+    string encryption_key_str;
+
+    printf("Enter encryption key: ");
+    getline(cin, encryption_key_str);
+
+    // Convert to int
+    int encryption_key = 0;
+
+    for (int i = 0; i < encryption_key_str.size(); i++)
+    {
+        encryption_key += encryption_key_str[i] + random_values[i % random_values.size()];
     }
 
     // Encrypt text
